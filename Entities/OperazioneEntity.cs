@@ -22,6 +22,7 @@ namespace BancaApi.Entities
         [MaxLength(50)]
         public string Funzionalita { get; set; }
 
+        [Column(TypeName = "decimal(10, 2)")]
         [Required]
         public decimal Quantita { get; set; }
 

@@ -81,5 +81,35 @@ namespace BancaApi.Controllers
                 return NotFound();
             }
         }
+
+        [HttpPut("sblocca/{id}")]
+        public async Task<IActionResult> SbloccaUtente(int id)
+        {
+            var utente = await _utenteRepository.GetUtenteByIdAsync(id);
+
+            if (utente == null)
+            {
+                return NotFound(); 
+            }
+
+            if (!utente.Bloccato)
+            {
+                return BadRequest("L'utente non è bloccato.");
+            }
+
+            utente.Bloccato = false;
+
+            var updatedUtente = await _utenteRepository.UpdateUtenteAsync(id, utente);
+
+            if (updatedUtente != null)
+            {
+                return Ok("Utente sbloccato con successo.");
+            }
+            else
+            {
+                return StatusCode(500, "Si è verificato un errore durante lo sblocco dell'utente.");
+            }
+        }
+
     }
 }

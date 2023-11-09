@@ -25,8 +25,9 @@ namespace BancaApi.DbContexts
             );
 
             modelBuilder.Entity<UtenteEntity>().HasData(
-            new UtenteEntity { Id = 1, IdBanca = 1, NomeUtente = "dario", Password = "dario", Bloccato = false },
-            new UtenteEntity { Id = 2, IdBanca = 2, NomeUtente = "sidy", Password = "sidy", Bloccato = false }
+                new UtenteEntity { Id = 1, IdBanca = 1, NomeUtente = "dario", Password = "dario", Bloccato = false },
+                new UtenteEntity { Id = 2, IdBanca = 2, NomeUtente = "sidy", Password = "sidy", Bloccato = false },
+                new UtenteEntity { Id = 3, IdBanca = 2, NomeUtente = "sandro", Password = "sandro", Bloccato = true }
             );
 
 

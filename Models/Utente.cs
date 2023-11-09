@@ -2,6 +2,7 @@
 {
     public class Utente
     {
+        
         public int Id { get; set; }
         public int IdBanca { get; set; }
         public string NomeUtente { get; set; }

@@ -6,7 +6,7 @@ using BancaApi.Repositories;
 
 namespace BancaApi.Controllers
 {
-    [Route("api/banche")]
+    [Route("api/[controller]")]
     [ApiController]
     public class BancaController : ControllerBase
     {

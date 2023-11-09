@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BancaApi.Migrations
 {
     [DbContext(typeof(BancaInfoContext))]
-    [Migration("20231107101456_p1")]
-    partial class p1
+    [Migration("20231109140250_p5")]
+    partial class p5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,9 +98,11 @@ namespace BancaApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Saldo")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10, 2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdUtente");
 
                     b.ToTable("Conti");
 
@@ -108,14 +110,14 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 1,
-                            DataUltimaOperazione = new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9726),
+                            DataUltimaOperazione = new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6302),
                             IdUtente = 1,
                             Saldo = 1000m
                         },
                         new
                         {
                             Id = 2,
-                            DataUltimaOperazione = new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9787),
+                            DataUltimaOperazione = new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6343),
                             IdUtente = 2,
                             Saldo = 2000m
                         });
@@ -180,7 +182,7 @@ namespace BancaApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Quantita")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10, 2)");
 
                     b.HasKey("Id");
 
@@ -194,7 +196,7 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 1,
-                            DataOperazione = new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9814),
+                            DataOperazione = new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6353),
                             Funzionalita = "Deposito",
                             IdBanca = 1,
                             IdUtente = 1,
@@ -203,7 +205,7 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 2,
-                            DataOperazione = new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9818),
+                            DataOperazione = new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6355),
                             Funzionalita = "Prelievo",
                             IdBanca = 2,
                             IdUtente = 2,
@@ -216,6 +218,9 @@ namespace BancaApi.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<bool>("Bloccato")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("IdBanca")
                         .HasColumnType("int");
@@ -240,6 +245,7 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 1,
+                            Bloccato = false,
                             IdBanca = 1,
                             NomeUtente = "dario",
                             Password = "dario"
@@ -247,9 +253,18 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 2,
+                            Bloccato = false,
                             IdBanca = 2,
                             NomeUtente = "sidy",
                             Password = "sidy"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Bloccato = true,
+                            IdBanca = 2,
+                            NomeUtente = "sandro",
+                            Password = "sandro"
                         });
                 });
 
@@ -270,6 +285,17 @@ namespace BancaApi.Migrations
                     b.Navigation("Banca");
 
                     b.Navigation("Funzionalita");
+                });
+
+            modelBuilder.Entity("BancaApi.Entities.ContoEntity", b =>
+                {
+                    b.HasOne("BancaApi.Entities.UtenteEntity", "Utente")
+                        .WithMany()
+                        .HasForeignKey("IdUtente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Utente");
                 });
 
             modelBuilder.Entity("BancaApi.Entities.OperazioneEntity", b =>

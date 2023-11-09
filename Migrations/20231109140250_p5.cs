@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+
 namespace BancaApi.Migrations
 {
     /// <inheritdoc />
-    public partial class p1 : Migration
+    public partial class p5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,22 +26,6 @@ namespace BancaApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Banche", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Conti",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    IdUtente = table.Column<int>(type: "int", nullable: false),
-                    Saldo = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    DataUltimaOperazione = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Conti", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -69,7 +54,8 @@ namespace BancaApi.Migrations
                     NomeUtente = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Password = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Bloccato = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,6 +97,28 @@ namespace BancaApi.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Conti",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IdUtente = table.Column<int>(type: "int", nullable: false),
+                    Saldo = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    DataUltimaOperazione = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Conti", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Conti_Utenti_IdUtente",
+                        column: x => x.IdUtente,
+                        principalTable: "Utenti",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Operazioni",
                 columns: table => new
                 {
@@ -120,7 +128,7 @@ namespace BancaApi.Migrations
                     IdUtente = table.Column<int>(type: "int", nullable: false),
                     Funzionalita = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Quantita = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    Quantita = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DataOperazione = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
@@ -151,15 +159,6 @@ namespace BancaApi.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Conti",
-                columns: new[] { "Id", "DataUltimaOperazione", "IdUtente", "Saldo" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9726), 1, 1000m },
-                    { 2, new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9787), 2, 2000m }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Funzionalita",
                 columns: new[] { "Id", "Nome" },
                 values: new object[,]
@@ -181,11 +180,21 @@ namespace BancaApi.Migrations
 
             migrationBuilder.InsertData(
                 table: "Utenti",
-                columns: new[] { "Id", "IdBanca", "NomeUtente", "Password" },
+                columns: new[] { "Id", "Bloccato", "IdBanca", "NomeUtente", "Password" },
                 values: new object[,]
                 {
-                    { 1, 1, "dario", "dario" },
-                    { 2, 2, "sidy", "sidy" }
+                    { 1, false, 1, "dario", "dario" },
+                    { 2, false, 2, "sidy", "sidy" },
+                    { 3, true, 2, "sandro", "sandro" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Conti",
+                columns: new[] { "Id", "DataUltimaOperazione", "IdUtente", "Saldo" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6302), 1, 1000m },
+                    { 2, new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6343), 2, 2000m }
                 });
 
             migrationBuilder.InsertData(
@@ -193,8 +202,8 @@ namespace BancaApi.Migrations
                 columns: new[] { "Id", "DataOperazione", "Funzionalita", "IdBanca", "IdUtente", "Quantita" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9814), "Deposito", 1, 1, 500m },
-                    { 2, new DateTime(2023, 11, 7, 11, 14, 56, 279, DateTimeKind.Local).AddTicks(9818), "Prelievo", 2, 2, 300m }
+                    { 1, new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6353), "Deposito", 1, 1, 500m },
+                    { 2, new DateTime(2023, 11, 9, 15, 2, 50, 531, DateTimeKind.Local).AddTicks(6355), "Prelievo", 2, 2, 300m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -206,6 +215,11 @@ namespace BancaApi.Migrations
                 name: "IX_BancheFunzionalita_IdFunzionalita",
                 table: "BancheFunzionalita",
                 column: "IdFunzionalita");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Conti_IdUtente",
+                table: "Conti",
+                column: "IdUtente");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Operazioni_IdBanca",
