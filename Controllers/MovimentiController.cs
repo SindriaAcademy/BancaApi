@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BancaApi.Entities;
 using BancaApi.Repositories;
+using BancaApi.Dtos;
 
 namespace BancaApi.Controllers
 {
@@ -20,7 +21,7 @@ namespace BancaApi.Controllers
         }
 
         [HttpPost("prelievo/{idUtente}")]
-        public async Task<IActionResult> Prelievo(int idUtente, [FromBody] OperazioneEntity operazione)
+        public async Task<IActionResult> Prelievo(int idUtente, [FromBody] OperazioneDto operazione)
         {
             var utente = await _utenteRepository.GetUtenteByIdAsync(idUtente);
 
@@ -61,7 +62,7 @@ namespace BancaApi.Controllers
         }
 
         [HttpPost("versamento/{idUtente}")]
-        public async Task<IActionResult> Versamento(int idUtente, [FromBody] OperazioneEntity operazione)
+        public async Task<IActionResult> Versamento(int idUtente, [FromBody] OperazioneDto operazione)
         {
             var utente = await _utenteRepository.GetUtenteByIdAsync(idUtente);
 
@@ -112,8 +113,10 @@ namespace BancaApi.Controllers
                 return NotFound("Conto non trovato per l'utente");
             }
 
-            return Ok($"Saldo dell'utente {utente.NomeUtente}: {conto.Saldo}");
+            var saldoResponse = new { Saldo = conto.Saldo }; // Return as a JSON object
+            return Ok(saldoResponse);
         }
+
 
         [HttpGet("registro-operazioni/{idUtente}")]
         public async Task<IActionResult> GetRegistroOperazioni(int idUtente)

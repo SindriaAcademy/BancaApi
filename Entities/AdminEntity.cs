@@ -1,12 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace BancaApi.Entities
 {
-    public class UtenteEntity
+    public class AdminEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,24 +13,10 @@ namespace BancaApi.Entities
 
         [ForeignKey("Banca")]
         public int IdBanca { get; set; }
-        public BancaEntity? Banca { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string NomeUtente { get; set; }
-
-        [Required]
+        public string Username { get; set; }
         public string Password { get; set; }
-
-        [Required]
+        public BancaEntity? Banca { get; set; }
         public string Token { get; set; }
-
-        [Required]
         public string Role { get; set; }
-
-        [Required]
-        public bool Bloccato { get; set; } = false;
-
-
     }
 }

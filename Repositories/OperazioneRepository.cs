@@ -1,4 +1,6 @@
-﻿using BancaApi.DbContexts;
+﻿using AutoMapper;
+using BancaApi.DbContexts;
+using BancaApi.Dtos;
 using BancaApi.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,45 +9,55 @@ namespace BancaApi.Repositories
     public class OperazioneRepository : IOperazioneRepository
     {
         private readonly BancaInfoContext _context;
+        private readonly IMapper _mapper;
 
-        public OperazioneRepository(BancaInfoContext context)
+        public OperazioneRepository(BancaInfoContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<OperazioneEntity>> GetOperazioniByUtenteIdAsync(int idUtente)
+        public async Task<IEnumerable<OperazioneDto>> GetOperazioniByUtenteIdAsync(int idUtente)
         {
-            return await _context.Operazioni.Where(operazione => operazione.IdUtente == idUtente).ToListAsync();
+            var operazioni = await _context.Operazioni
+                .Where(operazione => operazione.IdUtente == idUtente)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<OperazioneDto>>(operazioni);
         }
 
-        public async Task<IEnumerable<OperazioneEntity>> GetOperazioniAsync()
+        public async Task<IEnumerable<OperazioneDto>> GetOperazioniAsync()
         {
-            return await _context.Operazioni.ToListAsync();
+            var operazioni = await _context.Operazioni.ToListAsync();
+            return _mapper.Map<IEnumerable<OperazioneDto>>(operazioni);
         }
 
-        public async Task<OperazioneEntity> GetOperazioneByIdAsync(int id)
+        public async Task<OperazioneDto> GetOperazioneByIdAsync(int id)
         {
-            return await _context.Operazioni.FirstOrDefaultAsync(o => o.Id == id);
+            var operazione = await _context.Operazioni.FirstOrDefaultAsync(o => o.Id == id);
+            return _mapper.Map<OperazioneDto>(operazione);
         }
 
-        public async Task<OperazioneEntity> CreateOperazioneAsync(OperazioneEntity operazione)
+        public async Task<OperazioneDto> CreateOperazioneAsync(OperazioneDto operazioneDto)
         {
-            if (operazione == null)
+            if (operazioneDto == null)
             {
-                throw new ArgumentNullException(nameof(operazione));
+                throw new ArgumentNullException(nameof(operazioneDto));
             }
 
-            _context.Operazioni.Add(operazione);
+            var operazioneEntity = _mapper.Map<OperazioneEntity>(operazioneDto);
+
+            _context.Operazioni.Add(operazioneEntity);
             await _context.SaveChangesAsync();
 
-            return operazione;
+            return _mapper.Map<OperazioneDto>(operazioneEntity);
         }
 
-        public async Task<bool> UpdateOperazioneAsync(int id, OperazioneEntity operazione)
+        public async Task<bool> UpdateOperazioneAsync(int id, OperazioneDto operazioneDto)
         {
-            if (operazione == null)
+            if (operazioneDto == null)
             {
-                throw new ArgumentNullException(nameof(operazione));
+                throw new ArgumentNullException(nameof(operazioneDto));
             }
 
             var existingOperazione = await _context.Operazioni.FirstOrDefaultAsync(o => o.Id == id);
@@ -55,9 +67,7 @@ namespace BancaApi.Repositories
                 return false;
             }
 
-            existingOperazione.Funzionalita = operazione.Funzionalita;
-            existingOperazione.Quantita = operazione.Quantita;
-            existingOperazione.DataOperazione = operazione.DataOperazione;
+            _mapper.Map(operazioneDto, existingOperazione);
 
             await _context.SaveChangesAsync();
 

@@ -39,16 +39,27 @@ namespace BancaApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBanca([FromBody] BancaEntity banca)
         {
+            if (banca == null)
+            {
+                return BadRequest("Banca data is null.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
                 var createdBanca = await _bancaRepository.CreateBancaAsync(banca);
-                return CreatedAtAction("GetBancaById", new { id = createdBanca.Id }, createdBanca);
+                return CreatedAtAction(nameof(GetBancaById), new { id = createdBanca.Id }, createdBanca);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBanca(int id, [FromBody] BancaEntity banca)

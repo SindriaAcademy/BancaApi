@@ -3,6 +3,7 @@ using System;
 using BancaApi.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BancaApi.Migrations
 {
     [DbContext(typeof(BancaInfoContext))]
-    partial class BancaInfoContextModelSnapshot : ModelSnapshot
+    [Migration("20231117141906_p9")]
+    partial class p9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +58,7 @@ namespace BancaApi.Migrations
                         {
                             Id = 1,
                             IdBanca = 1,
-                            Password = "C8nSHYA7gGfupj2SPuCc5s7rkaTvh7MprbLItngs1aaKePyKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "admin",
                             Role = "admin",
                             Token = "",
                             Username = "admin"
@@ -64,7 +67,7 @@ namespace BancaApi.Migrations
                         {
                             Id = 2,
                             IdBanca = 2,
-                            Password = "KLdMRP2VpxNnUWYMaIwgOpbo2X2t2Dqhw0ZlCn+/JfflWSN1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "admin1",
                             Role = "admin",
                             Token = "",
                             Username = "admin1"
@@ -73,7 +76,7 @@ namespace BancaApi.Migrations
                         {
                             Id = 3,
                             IdBanca = 3,
-                            Password = "f0frJxBd87l0hepRKCtVcVG1h1cgsmLnPPPAx8cwIWruY3t+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "admin2",
                             Role = "admin",
                             Token = "",
                             Username = "admin2"
@@ -82,7 +85,7 @@ namespace BancaApi.Migrations
                         {
                             Id = 4,
                             IdBanca = 4,
-                            Password = "UwYcMU+OlpdtLr85F2PPxZmjfLx5aV1R65FMdpxBgIjvu6Z1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "admin3",
                             Role = "admin",
                             Token = "",
                             Username = "admin3"
@@ -222,28 +225,28 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 1,
-                            DataUltimaOperazione = new DateTime(2023, 11, 20, 15, 56, 4, 368, DateTimeKind.Local).AddTicks(9955),
+                            DataUltimaOperazione = new DateTime(2023, 11, 17, 15, 19, 5, 841, DateTimeKind.Local).AddTicks(4709),
                             IdUtente = 1,
                             Saldo = 1000m
                         },
                         new
                         {
                             Id = 2,
-                            DataUltimaOperazione = new DateTime(2023, 11, 20, 15, 56, 4, 368, DateTimeKind.Local).AddTicks(9993),
+                            DataUltimaOperazione = new DateTime(2023, 11, 17, 15, 19, 5, 841, DateTimeKind.Local).AddTicks(4774),
                             IdUtente = 2,
                             Saldo = 2000m
                         },
                         new
                         {
                             Id = 3,
-                            DataUltimaOperazione = new DateTime(2023, 11, 20, 15, 56, 4, 368, DateTimeKind.Local).AddTicks(9995),
+                            DataUltimaOperazione = new DateTime(2023, 11, 17, 15, 19, 5, 841, DateTimeKind.Local).AddTicks(4777),
                             IdUtente = 3,
                             Saldo = 2000m
                         },
                         new
                         {
                             Id = 4,
-                            DataUltimaOperazione = new DateTime(2023, 11, 20, 15, 56, 4, 368, DateTimeKind.Local).AddTicks(9997),
+                            DataUltimaOperazione = new DateTime(2023, 11, 17, 15, 19, 5, 841, DateTimeKind.Local).AddTicks(4780),
                             IdUtente = 4,
                             Saldo = 2000m
                         });
@@ -322,7 +325,7 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 1,
-                            DataOperazione = new DateTime(2023, 11, 20, 15, 56, 4, 369, DateTimeKind.Local).AddTicks(18),
+                            DataOperazione = new DateTime(2023, 11, 17, 15, 19, 5, 841, DateTimeKind.Local).AddTicks(4803),
                             Funzionalita = "Deposito",
                             IdBanca = 1,
                             IdUtente = 1,
@@ -331,7 +334,7 @@ namespace BancaApi.Migrations
                         new
                         {
                             Id = 2,
-                            DataOperazione = new DateTime(2023, 11, 20, 15, 56, 4, 369, DateTimeKind.Local).AddTicks(20),
+                            DataOperazione = new DateTime(2023, 11, 17, 15, 19, 5, 841, DateTimeKind.Local).AddTicks(4807),
                             Funzionalita = "Prelievo",
                             IdBanca = 2,
                             IdUtente = 2,
@@ -381,7 +384,7 @@ namespace BancaApi.Migrations
                             Bloccato = false,
                             IdBanca = 1,
                             NomeUtente = "dario",
-                            Password = "MpYulXUsX0dp1dsSxZqWlDZ+Dz69yAYpAV1AEBG1ibRSiatYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "dario",
                             Role = "teacher",
                             Token = ""
                         },
@@ -391,7 +394,7 @@ namespace BancaApi.Migrations
                             Bloccato = false,
                             IdBanca = 2,
                             NomeUtente = "sidy",
-                            Password = "/JfppxLR572j6rLxyrJtoaBBe/bQ5mI+t1UntuCWzkSKKEneAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "sidy",
                             Role = "student",
                             Token = ""
                         },
@@ -401,7 +404,7 @@ namespace BancaApi.Migrations
                             Bloccato = true,
                             IdBanca = 3,
                             NomeUtente = "sandro",
-                            Password = "oO1v+kWFvNSNDU6OqhOiRkf/8JvRpNt0+FZ8WzBi34HBnu9RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "sandro",
                             Role = "student",
                             Token = ""
                         },
@@ -411,7 +414,7 @@ namespace BancaApi.Migrations
                             Bloccato = true,
                             IdBanca = 2,
                             NomeUtente = "sara",
-                            Password = "5NbYuRHS7btFRbFOqo0XCIo1hQNg3w3QI9MKnGp8tZeMnG1LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+                            Password = "sara",
                             Role = "student",
                             Token = ""
                         });

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using BancaApi.Dtos;
 using BancaApi.Entities;
 using BancaApi.Repositories;
 
@@ -9,37 +11,65 @@ namespace BancaApi.Controllers
     public class ContoController : ControllerBase
     {
         private readonly IContoRepository _contoRepository;
+        private readonly IMapper _mapper;
+        private readonly IUtenteRepository _utenteRepository;
 
-        public ContoController(IContoRepository contoRepository)
+        public ContoController(IContoRepository contoRepository, IMapper mapper, IUtenteRepository utenteRepository)
         {
             _contoRepository = contoRepository;
+            _mapper = mapper;
+            _utenteRepository = utenteRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetConti()
         {
             var conti = await _contoRepository.GetContiAsync();
-            return Ok(conti);
+            var contiDto = _mapper.Map<IEnumerable<ContoDto>>(conti);
+            return Ok(contiDto);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContoById(int id)
         {
             var conto = await _contoRepository.GetContoByIdAsync(id);
+
             if (conto == null)
             {
                 return NotFound();
             }
-            return Ok(conto);
+
+            var contoDto = _mapper.Map<ContoDto>(conto);
+            return Ok(contoDto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateConto([FromBody] ContoEntity conto)
+        public async Task<IActionResult> CreateConto([FromBody] ContoDto contoDto)
         {
             try
             {
-                var createdConto = await _contoRepository.CreateContoAsync(conto);
-                return CreatedAtAction("GetContoById", new { id = createdConto.Id }, createdConto);
+                // Check if the provided IdUtente is valid
+                var utente = await _utenteRepository.GetUtenteByIdAsync(contoDto.IdUtente);
+
+                if (utente == null)
+                {
+                    return NotFound($"Utente with Id {contoDto.IdUtente} not found.");
+                }
+
+                // Map ContoDto to ContoEntity
+                var contoEntity = _mapper.Map<ContoEntity>(contoDto);
+
+                // Associate the Conto with the Utente
+                contoEntity.IdUtente = contoDto.IdUtente;
+
+                // Create the Conto
+                var createdConto = await _contoRepository.CreateContoAsync(contoDto);
+
+                // Map the created Conto to ContoDto
+                var createdContoDto = _mapper.Map<ContoDto>(createdConto);
+
+                // Return the created ContoDto
+                return CreatedAtAction(nameof(GetContoById), new { id = createdContoDto.Id }, createdContoDto);
             }
             catch (Exception ex)
             {
@@ -47,25 +77,44 @@ namespace BancaApi.Controllers
             }
         }
 
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateConto(int id, [FromBody] ContoEntity conto)
+        public async Task<IActionResult> UpdateConto(int id, [FromBody] ContoDto contoDto)
         {
-            if (conto == null)
+            try
             {
-                return BadRequest();
-            }
+                // Check if the provided IdUtente is valid
+                var utente = await _utenteRepository.GetUtenteByIdAsync(contoDto.IdUtente);
 
-            var updated = await _contoRepository.UpdateContoAsync(id, conto);
+                if (utente == null)
+                {
+                    return NotFound($"Utente with Id {contoDto.IdUtente} not found.");
+                }
 
-            if (updated)
-            {
-                return Ok();
+                // Map ContoDto to ContoEntity
+                var contoEntity = _mapper.Map<ContoEntity>(contoDto);
+
+                // Associate the Conto with the Utente
+                contoEntity.IdUtente = contoDto.IdUtente;
+
+                // Update the Conto
+                var updated = await _contoRepository.UpdateContoAsync(id, contoDto);
+
+                if (updated)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound($"Conto with Id {id} not found.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConto(int id)

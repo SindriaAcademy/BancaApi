@@ -1,10 +1,13 @@
+using System.Text;
 using BancaApi.DbContexts;
 using BancaApi.Profiles;
 using BancaApi.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,18 +27,39 @@ builder.Services.AddDbContext<BancaInfoContext>(cfg =>
 
 });
 
-// Registra il tuo repository e AutoMapper
+// repository e AutoMapper
 builder.Services.AddScoped<IBancaRepository, BancaRepository>();
 builder.Services.AddScoped<IContoRepository, ContoRepository>();
 builder.Services.AddScoped<IOperazioneRepository, OperazioneRepository>();
 builder.Services.AddScoped<IUtenteRepository, UtenteRepository>();
 builder.Services.AddScoped<IFuncRepo, FuncRepo>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IBancheFuncRepo, BancheFuncRepo>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddAutoMapper(typeof(UtenteProfile));
+builder.Services.AddAutoMapper(typeof(AdminProfile));
+
 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("veryverysceret.....")),
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 var app = builder.Build();
 

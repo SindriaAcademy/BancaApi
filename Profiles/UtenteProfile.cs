@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BancaApi.Dtos;
+using BancaApi.Entities;
 using BancaApi.Models;
 
 namespace BancaApi.Profiles
@@ -8,7 +9,7 @@ namespace BancaApi.Profiles
     {
         public UtenteProfile()
         {
-            CreateMap<Utente, UtenteDto>().ReverseMap();
+            CreateMap<UtenteEntity, UtenteDto>().ReverseMap();
         }
     }
 }

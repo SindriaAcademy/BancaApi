@@ -1,14 +1,16 @@
-﻿using BancaApi.Entities;
-using BancaApi.Models;
+﻿using BancaApi.Dtos;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BancaApi.Repositories
 {
     public interface IUtenteRepository
     {
-        Task<IEnumerable<UtenteEntity>> GetUtentiAsync();
-        Task<UtenteEntity> GetUtenteByIdAsync(int id);
-        Task<UtenteEntity> CreateUtenteAsync(UtenteEntity utente);
-        Task<bool> UpdateUtenteAsync(int id, UtenteEntity utente);
+        Task<IEnumerable<UtenteDto>> GetUtentiAsync();
+        Task<UtenteDto> GetUtenteByIdAsync(int id);
+        Task<UtenteDto> CreateUtenteAsync(UtenteDto utenteDto);
+        Task<bool> UpdateUtenteAsync(int id, UtenteDto utenteDto);
         Task<bool> DeleteUtenteAsync(int id);
+        Task<IEnumerable<UtenteDto>> GetUtentiByBancaIdAsync(int idBanca);
     }
 }

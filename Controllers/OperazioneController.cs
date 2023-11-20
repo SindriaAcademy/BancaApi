@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using BancaApi.Dtos;
 using BancaApi.Entities;
 using BancaApi.Repositories;
+using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BancaApi.Controllers
 {
@@ -9,17 +14,20 @@ namespace BancaApi.Controllers
     public class OperazioneController : ControllerBase
     {
         private readonly IOperazioneRepository _operazioneRepository;
+        private readonly IMapper _mapper;
 
-        public OperazioneController(IOperazioneRepository operazioneRepository)
+        public OperazioneController(IOperazioneRepository operazioneRepository, IMapper mapper)
         {
             _operazioneRepository = operazioneRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetOperazioni()
         {
             var operazioni = await _operazioneRepository.GetOperazioniAsync();
-            return Ok(operazioni);
+            var operazioniDto = _mapper.Map<IEnumerable<OperazioneDto>>(operazioni);
+            return Ok(operazioniDto);
         }
 
         [HttpGet("{id}")]
@@ -30,16 +38,21 @@ namespace BancaApi.Controllers
             {
                 return NotFound();
             }
-            return Ok(operazione);
+
+            var operazioneDto = _mapper.Map<OperazioneDto>(operazione);
+            return Ok(operazioneDto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOperazione([FromBody] OperazioneEntity operazione)
+        public async Task<IActionResult> CreateOperazione([FromBody] OperazioneDto operazioneDto)
         {
             try
             {
-                var createdOperazione = await _operazioneRepository.CreateOperazioneAsync(operazione);
-                return CreatedAtAction("GetOperazioneById", new { id = createdOperazione.Id }, createdOperazione);
+                //var operazioneEntity = _mapper.Map<OperazioneEntity>(operazioneDto);
+                var createdOperazione = await _operazioneRepository.CreateOperazioneAsync(operazioneDto);
+
+                var createdOperazioneDto = _mapper.Map<OperazioneDto>(createdOperazione);
+                return CreatedAtAction(nameof(GetOperazioneById), new { id = createdOperazioneDto.Id }, createdOperazioneDto);
             }
             catch (Exception ex)
             {
@@ -48,14 +61,15 @@ namespace BancaApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateOperazione(int id, [FromBody] OperazioneEntity operazione)
+        public async Task<IActionResult> UpdateOperazione(int id, [FromBody] OperazioneDto operazioneDto)
         {
-            if (operazione == null)
+            if (operazioneDto == null)
             {
                 return BadRequest();
             }
 
-            var updated = await _operazioneRepository.UpdateOperazioneAsync(id, operazione);
+           // var operazioneEntity = _mapper.Map<OperazioneEntity>(operazioneDto);
+            var updated = await _operazioneRepository.UpdateOperazioneAsync(id, operazioneDto);
 
             if (updated)
             {

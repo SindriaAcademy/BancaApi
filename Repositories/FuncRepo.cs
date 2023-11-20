@@ -1,9 +1,6 @@
 ﻿using BancaApi.DbContexts;
 using BancaApi.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BancaApi.Repositories
 {
