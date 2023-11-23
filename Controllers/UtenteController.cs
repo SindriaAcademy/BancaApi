@@ -21,12 +21,14 @@ namespace BancaApi.Controllers
         private readonly IUtenteRepository _utenteRepository;
         private readonly IMapper _mapper;
         private readonly BancaInfoContext _bancaDb;
+        private readonly ILogger<UtenteController> _logger;
 
-        public UtenteController(IUtenteRepository utenteRepository, IMapper mapper, BancaInfoContext bancaInfo)
+        public UtenteController(IUtenteRepository utenteRepository, IMapper mapper, BancaInfoContext bancaInfo, ILogger<UtenteController> logger)
         {
             _utenteRepository = utenteRepository;
             _mapper = mapper;
             _bancaDb = bancaInfo;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         }
 
@@ -76,33 +78,56 @@ namespace BancaApi.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] UtenteDto user)
         {
-            if (user == null)
-                return BadRequest("Invalid authentication data.");
-
-            var userEntity = _mapper.Map<UtenteEntity>(user);
-
-            var authenticatedUser = await _bancaDb.Utenti
-                .FirstOrDefaultAsync(x => x.NomeUtente == userEntity.NomeUtente);
-         
-
-            if (authenticatedUser == null)
-                return Unauthorized(new { Message = "Authentication failed. User not found or invalid credentials." });
-
-            if (!PasswordHasher.VerifyPassword(userEntity.Password, authenticatedUser.Password))
+            try
             {
-                return BadRequest(new { Message = "Password is incorrect" });
+                _logger.LogInformation($"Received authentication request for user: {user.NomeUtente}");
+
+                if (user == null)
+                {
+                    _logger.LogError("Invalid authentication data.");
+                    return BadRequest("Invalid authentication data.");
+                }
+
+                var userEntity = _mapper.Map<UtenteEntity>(user);
+
+                _logger.LogInformation($"Mapped user entity: {userEntity}");
+
+                var authenticatedUser = await _bancaDb.Utenti
+                    .FirstOrDefaultAsync(x => x.NomeUtente == userEntity.NomeUtente);
+
+                _logger.LogInformation($"Authenticated user: {authenticatedUser}");
+
+                if (authenticatedUser == null)
+                {
+                    _logger.LogWarning($"User not found: {userEntity.NomeUtente}");
+                    return Unauthorized(new { Message = "Authentication failed. User not found or invalid credentials." });
+                }
+
+                if (PasswordHasher.VerifyPassword(userEntity.Password, authenticatedUser.Password))
+                {
+                    _logger.LogWarning($"Password verification failed for user: {userEntity.NomeUtente}");
+                    return BadRequest(new { Message = "Password is incorrect" });
+                }
+
+                authenticatedUser.Token = CreateJwt(user);
+
+                _logger.LogInformation($"User authenticated successfully: {userEntity.NomeUtente}");
+
+                return Ok(new
+                {
+                    id = authenticatedUser.Id,
+                    idBanca = authenticatedUser.IdBanca,
+                    Token = authenticatedUser.Token,
+                    Message = "Login success"
+                }); ;
             }
-
-            authenticatedUser.Token = CreateJwt(user);
-            return Ok(new
+            catch (Exception ex)
             {
-                idBanca = authenticatedUser.IdBanca,
-                Token = authenticatedUser.Token,
-                Message = "Login success"
-            });
-
-
+                _logger.LogError($"An unexpected error occurred: {ex}");
+                return StatusCode(500, "An unexpected error occurred");
+            }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateUtente([FromBody] UtenteDto utenteDto)
